@@ -7,6 +7,18 @@ or running any code from the module itself.
 
 Note: this module is a work-in-progress.
 
+Installation
+==========
+```
+pip install -r requirements.txt
+```
+
+Running
+=======
+```
+python print_deps.py path/to/project/root
+```
+
 Running tests
 =============
 run `nosetests -s`.
