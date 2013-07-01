@@ -1,7 +1,6 @@
 import ast
 import sys
 import os.path
-import pkgutil
 from collections import defaultdict
 
 class Node(object):
