@@ -4,6 +4,8 @@ import os.path
 from collections import defaultdict
 
 class Node(object):
+    """Tree structure for managing python dependencies"""
+
     @classmethod
     def new_nonleaf(cls):
         return Node(False, defaultdict(Node.new_nonleaf))
@@ -77,8 +79,12 @@ class DepVisitor(ast.NodeVisitor):
             impt = '%s.%s' % (node.module, alias.name)
             self.deptree.add_path(impt)
 
-# This treats all directories as packages
 def __modules_with_root_module_path(path):
+    """
+    Returns all modules beneath the root module path. This treats all
+    directories as packages regardless of whether or not they include
+    a __init__.py.
+    """
     modules = []
     if os.path.isfile(path) and os.path.splitext(path)[1] == '.py' and os.path.basename(path) != '__init__.py':
         name = os.path.splitext(os.path.basename(path))[0]
@@ -91,7 +97,10 @@ def __modules_with_root_module_path(path):
     return modules
 
 def paths_to_root_modules(rootpath):
-    # Note: does not follow symbolic links
+    """
+    Returns list of all paths to top-level (root) modules beneath rootpath.
+    Note: does not follow symbolic links
+    """
     if os.path.isfile(rootpath) and os.path.splitext(rootpath)[1] == '.py':
         return [rootpath]
     if os.path.exists(os.path.join(rootpath, '__init__.py')):
