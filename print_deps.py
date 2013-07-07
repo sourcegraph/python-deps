@@ -13,7 +13,7 @@ def get_args():
     parser = argparse.ArgumentParser(description='Grab dependencies from a setup.py file')
     parser.add_argument('rootdir', help='path to root project directory')
     parser.add_argument('--debug', action='store_true', help='enable if you want to enable debugging stacktrace')
-    parser.add_argument('--all', action='store_true', help='enable if you want to print all deps, not just external')
+    parser.add_argument('--toplevel', action='store_true', help='enable if you want to print just top-level modules')
     return parser.parse_args()
 
 if __name__ == '__main__':
@@ -24,6 +24,8 @@ if __name__ == '__main__':
 
     deps = import_tree_for_project(args.rootdir, ignore_stdlib=True, ignore_internal=True)
 
-    # deps.print_tree()
-    for k in deps.children.keys():
-        print k
+    if args.toplevel:
+        for k in sorted(deps.children.keys()):
+            print k
+    else:
+        deps.print_tree()

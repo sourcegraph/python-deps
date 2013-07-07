@@ -73,6 +73,10 @@
         "snakefood": {
             "children": {}, 
             "isleaf": "True"
+        }, 
+        "sys": {
+            "children": {}, 
+            "isleaf": "True"
         }
     }, 
     "isleaf": "False"

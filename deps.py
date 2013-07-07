@@ -226,4 +226,4 @@ def stdlib_root_modules():
     dynload_dir = os.path.join(stdlib_dir, 'lib-dynload/*')
     so_modules = [os.path.splitext(os.path.basename(path))[0] for path in glob(dynload_dir)]
 
-    return so_modules + py_modules
+    return set(so_modules) | set(py_modules) | set(sys.builtin_module_names)

@@ -3,6 +3,7 @@ a.a
 a.c
 a.b
 django.django
+sys
 repoze.lru
 json
 cmath
