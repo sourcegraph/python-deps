@@ -1,6 +1,6 @@
 import unittest
 import os.path
-from deps import *
+from pydep import *
 import json
 
 testdir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'testdata')

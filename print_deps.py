@@ -1,4 +1,4 @@
-from deps import *
+from pydep import *
 import argparse
 
 def debug():
