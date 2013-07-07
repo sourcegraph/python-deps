@@ -89,9 +89,17 @@ class DepVisitor(ast.NodeVisitor):
             self.imports.add(alias.name)
 
     def visit_ImportFrom(self, node):
+        if node.level > 0:
+            return              # ignore relative imports
+
         for alias in node.names:
-            impt = '%s.%s' % (node.module, alias.name)
-            self.imports.add(impt)
+            if alias.name == '*':
+                if node.module is not None:
+                    self.imports.add(node.module)
+            else:
+                if node.module is not None:
+                    impt = '%s.%s' % (node.module, alias.name)
+                    self.imports.add(impt)
 
 def __modules_with_root_module_path(path):
     """
@@ -149,14 +157,25 @@ def root_modules_defined_in(path, ignore_paths=[], followlinks=True):
         rootmodules.append(os.path.splitext(os.path.basename(r))[0])
     return rootmodules
 
-def external_import_tree_for_project(projectroot):
+def import_tree_for_project(projectroot, **kwargs):
     """
-    Provides tree of external imports for the project. Ignores stdlib
-    modules and internal modules
+    Provides tree of imports for the project. By default, ignores
+    stdlib modules and internal modules. Also ignores explicit
+    relative import paths (even when ignore_internal is False) and
+    does not handle implicit relative import paths (it treats these as
+    absolute paths).
     """
+
+    ignore_stdlib = kwargs.get('ignore_stdlib', True)
+    ignore_internal = kwargs.get('ignore_internal', True)
+
     ignore_tree = Node.new_nonleaf()
-    for m in set(modules_defined_in(projectroot)) | set(stdlib_root_modules()):
-        ignore_tree.add_path(m)
+    if ignore_internal:
+        for m in modules_defined_in(projectroot):
+            ignore_tree.add_path(m)
+    if ignore_stdlib:
+        for m in stdlib_root_modules():
+            ignore_tree.add_path(m)
 
     import_tree = Node.new_nonleaf()
     root_module_paths = paths_to_root_modules(projectroot)
@@ -180,10 +199,9 @@ def add_imports_for_file_to_tree(root_module_path, filename, import_tree, ignore
         visitor.visit(root)
         for impt in visitor.imports:
             if len(impt) == 0: continue # empty import
-            if impt[0] == '.': continue # explicit relative import
             if ignore_tree.contains_prefix_of(impt): continue # absolute path in ignore_tree
-            if filename == root_module_path: continue
             # TODO(bliu): ignore implicit relative imports
+
             import_tree.add_path(impt)
 
 def py_files_in_dir(rootdir, followlinks=True):

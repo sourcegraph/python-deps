@@ -4,6 +4,7 @@ a.c
 a.b
 django.django
 repoze.lru
+json
 cmath
 snakefood
 oauth

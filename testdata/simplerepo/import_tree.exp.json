@@ -34,6 +34,10 @@
             "children": {}, 
             "isleaf": "True"
         }, 
+        "json": {
+            "children": {}, 
+            "isleaf": "True"
+        }, 
         "oauth": {
             "children": {
                 "oauth": {

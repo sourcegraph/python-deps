@@ -23,12 +23,12 @@ class TestDependencies(unittest.TestCase):
 
     def test_import_tree_creation(self):
         expfilename = os.path.join(repodir, 'import_tree.exp.json')
-        deps = import_tree_for_project(repodir)
+        deps = import_tree_for_project(repodir, ignore_internal=False, ignore_stdlib=False)
         self.__check(expfilename, json.dumps(deps.to_dict(), indent=4, sort_keys=True), bgendata)
 
     def test_leaves(self):
         expfilename = os.path.join(repodir, 'imports.exp.txt')
-        deps = import_tree_for_project(repodir)
+        deps = import_tree_for_project(repodir, ignore_internal=False, ignore_stdlib=False)
         actual = '\n'.join(deps.leaves())
         self.__check(expfilename, actual, bgendata)
 
@@ -42,9 +42,14 @@ class TestDependencies(unittest.TestCase):
         actual = '\n'.join(modules_defined_in(repodir))
         self.__check(expfilename, actual, bgendata)
 
-    def test_external_import_tree(self):
-        expfilename = os.path.join(repodir, 'ext_import_tree.exp.json')
-        ext_deps = external_import_tree_for_project(repodir)
+    def test_external_import_tree_stdlib(self):
+        expfilename = os.path.join(repodir, 'ext_import_tree_stdlib.exp.json')
+        ext_deps = import_tree_for_project(repodir, ignore_internal=True, ignore_stdlib=False)
+        self.__check(expfilename, json.dumps(ext_deps.to_dict(), indent=4, sort_keys=True), bgendata)
+
+    def test_external_import_tree_nostdlib(self):
+        expfilename = os.path.join(repodir, 'ext_import_tree_nostdlib.exp.json')
+        ext_deps = import_tree_for_project(repodir, ignore_internal=True, ignore_stdlib=True)
         self.__check(expfilename, json.dumps(ext_deps.to_dict(), indent=4, sort_keys=True), bgendata)
 
     def test_python_version(self):

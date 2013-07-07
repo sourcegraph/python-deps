@@ -22,7 +22,7 @@ if __name__ == '__main__':
         print '##### DEBUG ENABLED #####'
         debug()
 
-    deps = external_import_tree_for_project(args.rootdir)
+    deps = import_tree_for_project(args.rootdir, ignore_stdlib=True, ignore_internal=True)
 
     # deps.print_tree()
     for k in deps.children.keys():
