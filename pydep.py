@@ -215,9 +215,7 @@ def stdlib_root_modules():
     Finds stdlib python packages (packages that shouldn't be
     downloaded via pip.
     """
-    import distutils.sysconfig as sysconfig
-    stdlib_dir = sysconfig.get_python_lib(standard_lib=True)
-    sitepkg_dir = sysconfig.get_python_lib(standard_lib=False)
+    stdlib_dir, sitepkg_dir = python_stdlib_dirs()
 
     # python modules
     py_modules = root_modules_defined_in(stdlib_dir, [sitepkg_dir])
@@ -227,3 +225,15 @@ def stdlib_root_modules():
     so_modules = [os.path.splitext(os.path.basename(path))[0] for path in glob(dynload_dir)]
 
     return set(so_modules) | set(py_modules) | set(sys.builtin_module_names)
+
+def python_stdlib_dirs():
+    """
+    Returns (<stdlib-dir>, <site-pkg-dir>). This exists because
+    sysconfig.get_python_lib(standard_lib=True) returns something
+    incorrect when running a virtualenv python (the path to the global
+    python standard lib directory, rather than the virtualenv standard
+    lib directory.
+    """
+    import distutils.sysconfig as sysconfig
+    sitepkg_dir = sysconfig.get_python_lib(standard_lib=False)
+    return (os.path.dirname(sitepkg_dir), sitepkg_dir)
