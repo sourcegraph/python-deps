@@ -2,12 +2,13 @@
 
 from pydep import *
 import argparse
+import sys
 
 def debug():
     import pdb, traceback, code, sys
     def handle_exception(tp, val, tb):  # open up debugger on exception
         traceback.print_tb(tb)
-        print 'ERROR:', val
+        sys.stderr.write('ERROR: %s' % str(val))
         pdb.post_mortem(tb)
     sys.excepthook = handle_exception
 
@@ -21,7 +22,7 @@ def get_args():
 if __name__ == '__main__':
     args = get_args()
     if args.debug:
-        print '##### DEBUG ENABLED #####'
+        sys.stderr.write('##### DEBUG ENABLED #####\n')
         debug()
 
     deps = import_tree_for_project(args.rootdir, ignore_stdlib=True, ignore_internal=True)
