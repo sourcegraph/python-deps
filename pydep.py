@@ -151,6 +151,10 @@ def modules_defined_in(path, ignore_paths=[], followlinks=True):
     return modules
 
 def root_modules_defined_in(path, ignore_paths=[], followlinks=True):
+    """
+    Paths passed as arguments should be absolute paths (there is no
+    input checking).
+    """
     rootpaths = paths_to_root_modules(path, ignore_paths, followlinks)
     rootmodules = []
     for r in rootpaths:
@@ -215,10 +219,10 @@ def stdlib_root_modules():
     Finds stdlib python packages (packages that shouldn't be
     downloaded via pip.
     """
-    stdlib_dir, sitepkg_dir = python_stdlib_dirs()
+    stdlib_dir, sitepkg_dir, global_sitepkg_dir = python_stdlib_dirs()
 
     # python modules
-    py_modules = root_modules_defined_in(stdlib_dir, [sitepkg_dir])
+    py_modules = root_modules_defined_in(stdlib_dir, [global_sitepkg_dir, sitepkg_dir])
 
     # c modules
     dynload_dir = os.path.join(stdlib_dir, 'lib-dynload/*')
@@ -228,12 +232,18 @@ def stdlib_root_modules():
 
 def python_stdlib_dirs():
     """
-    Returns (<stdlib-dir>, <site-pkg-dir>). This exists because
-    sysconfig.get_python_lib(standard_lib=True) returns something
-    incorrect when running a virtualenv python (the path to the global
-    python standard lib directory, rather than the virtualenv standard
-    lib directory.
+    Returns (<stdlib-dir>, <sitepkg-dir>, <global-sitepkg-dir>). This
+    exists because sysconfig.get_python_lib(standard_lib=True) returns
+    something surprising when running a virtualenv python (the path to
+    the global python standard lib directory, rather than the
+    virtualenv standard lib directory), whereas
+    sysconfig.get_python_lib(standard_lib=False) returns a path to the
+    local site-packages directory. When processing the standard lib
+    directory (global), we should ignore the global site-packages
+    directory, not just the local one (which wouldn't get processed
+    anyway).
     """
     import distutils.sysconfig as sysconfig
     sitepkg_dir = sysconfig.get_python_lib(standard_lib=False)
-    return (os.path.dirname(sitepkg_dir), sitepkg_dir)
+    stdlib_dir = sysconfig.get_python_lib(standard_lib=True)
+    return (stdlib_dir, sitepkg_dir, os.path.join(stdlib_dir, 'site-packages'))
