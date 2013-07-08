@@ -130,7 +130,7 @@ def paths_to_root_modules(rootpath, ignore_paths=[], followlinks=True):
             for ignore_path in ignore_paths]):
         return []
 
-    if os.path.isfile(rootpath) and not os.path.islink(rootpath) and os.path.splitext(rootpath)[1] == '.py':
+    if os.path.isfile(rootpath) and os.path.splitext(rootpath)[1] == '.py':
         return [rootpath]
     if os.path.exists(os.path.join(rootpath, '__init__.py')):
         return [rootpath]
@@ -181,7 +181,7 @@ def import_tree_for_project(projectroot, **kwargs):
     root_module_paths = paths_to_root_modules(projectroot)
 
     for root_module_path in root_module_paths:
-        if os.path.isdir(root_module_path) or os.path.islink(root_module_path):
+        if os.path.isdir(root_module_path):
             pyfiles = py_files_in_dir(root_module_path)
             for pyfile in pyfiles:
                 add_imports_for_file_to_tree(root_module_path, pyfile, import_tree, ignore_tree)
