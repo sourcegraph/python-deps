@@ -1,6 +1,8 @@
 #!/usr/bin/env python2.7
 
-from astdep import *
+import astdep
+import setupdep
+
 import argparse
 import sys
 
@@ -16,19 +18,32 @@ def get_args():
     parser = argparse.ArgumentParser(description='Grab dependencies from a setup.py file')
     parser.add_argument('rootdir', help='path to root project directory')
     parser.add_argument('--debug', action='store_true', help='enable if you want to enable debugging stacktrace')
-    parser.add_argument('--toplevel', action='store_true', help='enable if you want to print just top-level modules')
+    parser.add_argument('--method', type=str, default='any', help='Method of acquiring dependencies.  Either "ast", "setup.py", or "any"')
+    parser.add_argument('--toplevel', action='store_true', help='Used in conjunction with --method "ast".  Enable if you want to print just top-level modules')
     return parser.parse_args()
 
 if __name__ == '__main__':
     args = get_args()
     if args.debug:
-        sys.stderr.write('##### DEBUG ENABLED #####\n')
+        sys.stderr.write('!!!!! DEBUG ENABLED !!!!!\n')
         debug()
 
-    deps = import_tree_for_project(args.rootdir, ignore_stdlib=True, ignore_internal=True)
-
-    if args.toplevel:
-        for k in sorted(deps.children.keys()):
-            print k
+    if args.method == 'ast':
+        deps = astdep.import_tree_for_project(args.rootdir, ignore_stdlib=True, ignore_internal=True)
+        if args.toplevel:
+            for k in sorted(deps.children.keys()):
+                print k
+        else:
+            deps.print_tree()
+    elif args.method == 'setup.py':
+        deps = setupdep.deps(args.rootdir)
+        if deps is None:
+            sys.stderr.write('Error: no setup.py file found\n')
+            sys.exit(1)
+        for dep in deps:
+            print dep
+    elif args.method == 'any':
+        pass
     else:
-        deps.print_tree()
+        sys.stderr.write('Error due to unrecognized method: %s\n' % args.method)
+        sys.exit(1)
