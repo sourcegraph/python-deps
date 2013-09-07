@@ -22,6 +22,22 @@ def get_args():
     parser.add_argument('--toplevel', action='store_true', help='Used in conjunction with --method "ast".  Enable if you want to print just top-level modules')
     return parser.parse_args()
 
+def print_ast_deps(toplevel):
+    deps = astdep.import_tree_for_project(args.rootdir, ignore_stdlib=True, ignore_internal=True)
+    if toplevel:
+        for k in sorted(deps.children.keys()):
+            print k
+    else:
+        deps.print_tree()
+
+def print_setup_deps():
+    deps = setupdep.deps(args.rootdir)
+    if deps is None:
+        return False
+    for dep in deps:
+        print dep
+    return True
+
 if __name__ == '__main__':
     args = get_args()
     if args.debug:
@@ -29,21 +45,15 @@ if __name__ == '__main__':
         debug()
 
     if args.method == 'ast':
-        deps = astdep.import_tree_for_project(args.rootdir, ignore_stdlib=True, ignore_internal=True)
-        if args.toplevel:
-            for k in sorted(deps.children.keys()):
-                print k
-        else:
-            deps.print_tree()
+        print_ast_deps(args.toplevel)
     elif args.method == 'setup.py':
-        deps = setupdep.deps(args.rootdir)
-        if deps is None:
+        success = print_setup_deps()
+        if not success:
             sys.stderr.write('Error: no setup.py file found\n')
             sys.exit(1)
-        for dep in deps:
-            print dep
     elif args.method == 'any':
-        pass
+        if print_setup_deps() is False:
+            print_ast_deps(True)
     else:
         sys.stderr.write('Error due to unrecognized method: %s\n' % args.method)
         sys.exit(1)
