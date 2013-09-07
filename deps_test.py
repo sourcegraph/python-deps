@@ -72,3 +72,8 @@ class TestSetupPyDependencies(unittest.TestCase):
     def test_too_hard(self):
         repodir = os.path.join(testdir, "setup_repo_too_hard")
         self.assertTrue(setupdep.deps(repodir) is None)
+
+    def test_setup_with_ast_method(self):
+        repodir = os.path.join(testdir, "setup_repo_easy")
+        deps = import_tree_for_project(repodir, ignore_stdlib=True, ignore_internal=True)
+        self.assertTrue(len(deps.children) == 0)

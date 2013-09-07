@@ -131,7 +131,10 @@ def paths_to_root_modules(rootpath, ignore_paths=[], followlinks=True):
         return []
 
     if os.path.isfile(rootpath) and os.path.splitext(rootpath)[1] == '.py':
-        return [rootpath]
+        if rootpath.endswith('/setup.py') or rootpath == 'setup.py':
+            return []
+        else:
+            return [rootpath]
     if os.path.exists(os.path.join(rootpath, '__init__.py')):
         return [rootpath]
     if os.path.isfile(rootpath) or (os.path.islink(rootpath) and not followlinks):
