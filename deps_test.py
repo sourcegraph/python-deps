@@ -68,3 +68,7 @@ class TestSetupPyDependencies(unittest.TestCase):
     def test_hard(self):
         repodir = os.path.join(testdir, "setup_repo_hard")
         self.assertTrue(setupdep.deps(repodir) == ['nose==1.3.0', 'wsgiref==0.1.2'])
+
+    def test_too_hard(self):
+        repodir = os.path.join(testdir, "setup_repo_too_hard")
+        self.assertTrue(setupdep.deps(repodir) is None)

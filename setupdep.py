@@ -9,6 +9,7 @@ import pdb
 
 class SetupVisitor(ast.NodeVisitor):
     def __init__(self):
+        self.install_requires_parse_fail = False
         self.candidates = {}
         self.deps = []
 
@@ -37,6 +38,8 @@ class SetupVisitor(ast.NodeVisitor):
         elif isinstance(expr_node, ast.Name):
             if expr_node.id in self.candidates:
                 self.deps.extend(self.candidates[expr_node.id])
+        else:
+            self.install_requires_parse_fail = True
 
 def deps(project_dir):
     """Returns (deps, success)"""
@@ -50,5 +53,8 @@ def deps_from_setup_file(setup_file):
         root = ast.parse(setupf.read())
         visitor = SetupVisitor()
         visitor.visit(root)
-        return visitor.deps
+        if visitor.install_requires_parse_fail:
+            return None
+        else:
+            return visitor.deps
     return None
