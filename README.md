@@ -24,7 +24,7 @@ pip install -r requirements.txt
 Running
 =======
 ```
-python showpydep.py path/to/project/root
+python depdump.py path/to/project/root
 ```
 
 Running tests

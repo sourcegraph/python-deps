@@ -1,6 +1,6 @@
 #!/usr/bin/env python2.7
 
-from pydep import *
+from astdep import *
 import argparse
 import sys
 

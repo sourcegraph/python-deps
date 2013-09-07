@@ -1,11 +1,11 @@
 from setuptools import setup
 
 setup(
-    name='pydep',
+    name='astdep',
     version='0.1',
     url='http://github.com/sourcegraph/python-deps',
-    py_modules=['pydep'],
-    scripts=['showpydep.py'],
+    py_modules=['astdep'],
+    scripts=['depdump.py'],
     author='Beyang Liu',
     description='a lightweight python module that statically '
                 'computes the external imports of a python project',
