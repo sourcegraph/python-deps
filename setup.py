@@ -4,7 +4,7 @@ setup(
     name='astdep',
     version='0.1',
     url='http://github.com/sourcegraph/python-deps',
-    py_modules=['astdep'],
+    py_modules=['astdep', 'setupdep'],
     scripts=['depdump.py'],
     author='Beyang Liu',
     description='a lightweight python module that statically '
