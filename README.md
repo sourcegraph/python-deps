@@ -1,6 +1,12 @@
 python-deps
 ===========
 
+[![xrefs](https://sourcegraph.com/api/repos/github.com/sourcegraph/python-deps/badges/xrefs.png)](https://sourcegraph.com/github.com/sourcegraph/python-deps)
+[![funcs](https://sourcegraph.com/api/repos/github.com/sourcegraph/python-deps/badges/funcs.png)](https://sourcegraph.com/github.com/sourcegraph/python-deps)
+[![top func](https://sourcegraph.com/api/repos/github.com/sourcegraph/python-deps/badges/top-func.png)](https://sourcegraph.com/github.com/sourcegraph/python-deps)
+[![library users](https://sourcegraph.com/api/repos/github.com/sourcegraph/python-deps/badges/library-users.png)](https://sourcegraph.com/github.com/sourcegraph/python-deps)
+[![status](https://sourcegraph.com/api/repos/github.com/sourcegraph/python-deps/badges/status.png)](https://sourcegraph.com/github.com/sourcegraph/python-deps)
+
 python-deps is a lightweight python module that computes the external
 imports of a python project.  It does so statically, without importing
 or running any code from the module itself.
