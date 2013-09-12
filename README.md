@@ -24,18 +24,19 @@ Note: this module is a work-in-progress.
 Installation
 ==========
 ```
-pip install -r requirements.txt
+pip install git+https://github.com/sourcegraph/python-deps
 ```
 
 Running
 =======
 ```
-python depdump.py path/to/project/root
+depdump.py path/to/project/root
 ```
 
 Running tests
 =============
-run `nosetests -s`.
+- checkout: `git clone https://github.com/sourcegraph/python-deps.git`
+- run: `nosetests -s`
 
 Contributors
 * Beyang Liu <beyang@sourcegraph.com>
