@@ -201,7 +201,11 @@ def add_imports_for_file_to_tree(root_module_path, filename, import_tree, ignore
     root_module_path is either a *.py file or a directory containing __init__.py
     """
     with open(filename) as ff:
-        root = ast.parse(ff.read())
+        try:
+            root = ast.parse(ff.read())
+        except:
+            sys.stderr.write('Could not parse file %s\n' % filename)
+            return
         visitor = DepVisitor()
         visitor.visit(root)
         for impt in visitor.imports:
