@@ -25,7 +25,9 @@ class FromImportAsVisitor(ast.NodeVisitor):
 
         aliases = {'from': module, 'imports': []}
         for alias in node.names:
-            aliases['imports'].append({'name': alias.name, 'as': alias.asname})
+            as_ = alias.asname
+            if as_ is None: as_ = ''
+            aliases['imports'].append({'name': alias.name, 'as': as_})
         self.imports.append(aliases)
 
 def get_aliases(rootdir):
