@@ -44,10 +44,13 @@ def get_aliases(rootdir):
                 if module_name.startswith('..'):
                     module_name = module_name[2:]
                 with open(path.join(dirpath, filename)) as f:
-                    root = ast.parse(f.read())
-                    visitor = FromImportAsVisitor(module_name)
-                    visitor.visit(root)
-                    module_aliases.append({'module': module_name, 'reExports': visitor.imports})
+                    try: # best effort
+                        root = ast.parse(f.read())
+                        visitor = FromImportAsVisitor(module_name)
+                        visitor.visit(root)
+                        module_aliases.append({'module': module_name, 'reExports': visitor.imports})
+                    except:
+                        pass
     return module_aliases
 
 if __name__ == '__main__':
